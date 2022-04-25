@@ -11,6 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 
 library(quanteda)
+library(here)
 library(quanteda.sentiment)
 library(quanteda.textstats)
 library(tidyverse)
@@ -26,9 +27,9 @@ library(sentimentr)
 
 ```{r}
 
-raw_tweets <- read.csv("https://raw.githubusercontent.com/MaRo406/EDS_231-text-sentiment/main/dat/IPCC_tweets_April1-10_sample.csv", header=TRUE)
+raw_tweets <- read_csv(here("IPCC_tweets.csv"))
 
-dat <- raw_tweets[,c(5,7)] # Extract Date and Title fields
+dat <- raw_tweets[,c(4,6)] # Extract Date and Title fields
 
 tweets <- tibble(text = dat$Title,
                  id = seq(1:length(dat$Title)),
@@ -91,7 +92,7 @@ ggplot(common, aes(x = date, y = count, color = as.factor(word))) +
 
 ```
 
-I notices that both "IPCC" and "Climate" peaked on the day the IPCC released their report, which means that a lot of accounts were tweeting about it on April 4th and in hte days after, even though on a lesser intensity. 
+I noticed that both "IPCC" and "Climate" peaked on the day the IPCC released their report, which means that a lot of accounts were tweeting about it on April 4th and in the days after, even though on a lesser intensity. 
 
 ## 3. Adjust the wordcloud in the “wordcloud” chunk by coloring the positive and negative words so they are identifiable.
 
@@ -112,7 +113,7 @@ words %>%
 
 ```{r}
 
-dat2 <- raw_tweets[,c(5,7)] # Extract Date and Title fields
+dat2 <- raw_tweets[,c(4,6)] # Extract Date and Title fields
 
 corpus <- corpus(dat2$Title) #enter quanteda
 
@@ -175,9 +176,16 @@ their_sent <- raw_tweets %>%
   group_by(Sentiment) %>% 
   summarize(count = n())
 
+their_pos <- their_sent$count[3]
+their_neu <- their_sent$count[2]
+their_neg <- their_sent$count[1]
+
+my_pos <- my_sent$count[3]
+my_neu <- my_sent$count[2]
+my_neg <- my_sent$count[1]
 ```
 
-
+When comparing the sentiment based on the method I used versus that Brandwatch calculated, there are very big differences. Their total positive tweets are `r their_pos` which is `r my_pos - their_pos` less than my positive sentiment. The majority of their tweets were scored neutral which differs from my majority positive tweets so there is clearly some differences. My sentiment scored the tweets more negative than Brandwatch did with `r my_neg` negative tweets compared to their `r their_neg` negative tweets.  
 
 
 
