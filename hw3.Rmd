@@ -21,6 +21,7 @@ library(wordcloud)
 library(reshape2)
 library(kableExtra)
 library(sentimentr)
+library(patchwork)
 ```
 
 ## Read in Twitter Data
@@ -183,6 +184,18 @@ their_neg <- their_sent$count[1]
 my_pos <- my_sent$count[3]
 my_neu <- my_sent$count[2]
 my_neg <- my_sent$count[1]
+
+my_plot <- ggplot(data = my_sent, aes(x = polarity, y = count, fill = polarity)) +
+  geom_col() +
+  theme_classic()
+
+their_plot <- ggplot(data = their_sent, aes(x = Sentiment, y = count, fill = Sentiment)) +
+  geom_col() +
+  theme_classic()
+
+my_plot / their_plot
+
+
 ```
 
 When comparing the sentiment based on the method I used versus that Brandwatch calculated, there are very big differences. Their total positive tweets are `r their_pos` which is `r my_pos - their_pos` less than my positive sentiment. The majority of their tweets were scored neutral which differs from my majority positive tweets so there is clearly some differences. My sentiment scored the tweets more negative than Brandwatch did with `r my_neg` negative tweets compared to their `r their_neg` negative tweets.  
